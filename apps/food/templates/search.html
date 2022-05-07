@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="container">
+        <div class="columns">
+            <div class="column is-12">
+                <h1 class="title">Search</h1>
+
+                <p>Search term: "{{ query }}"</p>
+
+                <hr>
+                <form method="get" action="{% url 'search' %}">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" class="input" name="query" value="{{ query }}">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-success">Search</button>
+                        </div>
+                    </div>
+                </form>
+                
+                <hr>
+                <div class="search-results">
+                    {% if not meowers and not meows %}
+                        <p>No results</p>
+                    {% endif %}
+
+                    {% if meowers %}
+                        <strong>Meowers</strong>
+                        
+                        {% for meower in meowers %}
+                            <p><a href="{% url 'catprofile' meower.username %}">{{ meower.username }}</a></p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if meows %}
+                        <strong>Meows</strong>
+
+                        <div class="wrapper-meows">
+                            {% for meow in meows %}
+                                <div class="meow">
+                                    <article class="media">
+                                        <figure class="media-left">
+                                            <p class="image is-64x64">
+                                                {% if meow.created_by.catprofile.avatar %}
+                                                    <img src="{{ meow.created_by.catprofile.avatar.url }}">
+                                                {% endif %}
+                                            </p>
+                                        </figure>
+        
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <p>
+                                                    <strong><a href="{% url 'catprofile' meow.created_by.username %}">{{ meow.created_by.username }}</a></strong>
+                                                    <small>{{ meow.created_at|naturaltime }}</small>
+                                                    <br>
+                                                    {{ meow.body }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
